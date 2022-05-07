@@ -1,14 +1,15 @@
+
 namespace BadgerMvvm.Core;
 
 public class DelegateCommand : CommandBase
 {
   private readonly Func<Task> execute;
-  private readonly Func<Exception, Task> handleException;
+  private readonly Func<Exception, Task> exceptionHandler;
 
-  public DelegateCommand(Func<Task> execute, Func<Exception, Task> handleException)
+  public DelegateCommand(Func<Task> execute, Func<Exception, Task> exceptionHandler)
   {
     this.execute = execute;
-    this.handleException = handleException;
+    this.exceptionHandler = exceptionHandler;
   }
   
   public DelegateCommand(Func<Task> execute)
@@ -23,7 +24,7 @@ public class DelegateCommand : CommandBase
 
   protected override async Task HandleException(Exception exception)
   {
-    await handleException(exception);
+    await exceptionHandler(exception);
   }
 }
 
