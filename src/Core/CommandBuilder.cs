@@ -1,6 +1,6 @@
 // ReSharper disable ParameterHidesMember
 
-namespace BadgerMvvm.Core.Fluent;
+namespace BadgerMvvm.Core;
 
 public class CommandBuilder : ICommandBuilder
 {

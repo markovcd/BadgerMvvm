@@ -1,4 +1,4 @@
-namespace BadgerMvvm.Core.Fluent;
+namespace BadgerMvvm.Core;
 
 public interface ICommandBuilder
 {
