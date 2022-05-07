@@ -6,7 +6,7 @@ public abstract class CommandBase : BindableBaseSimple, ICommand, IAsyncCommand
 {
   private readonly object syncRoot = new();
   private bool isBusy;
-  private bool canExecute;
+  private bool canExecute = true;
 
   public event EventHandler? CanExecuteChanged;
     
@@ -35,7 +35,26 @@ public abstract class CommandBase : BindableBaseSimple, ICommand, IAsyncCommand
     }
   }
   
-  public abstract Task Execute();
+  public async Task Execute()
+  {
+    if (IsBusy || !CanExecute) return;
+    
+    try
+    {
+      IsBusy = true;
+      await ExecuteInternal();
+    }
+    catch (Exception e)
+    {
+      await HandleException(e);
+    }
+    finally
+    {
+      IsBusy = false;
+    }
+  }
+  
+  protected abstract Task ExecuteInternal();
 
   protected void RaiseCanExecuteChanged()
   {
@@ -47,28 +66,9 @@ public abstract class CommandBase : BindableBaseSimple, ICommand, IAsyncCommand
     return Task.CompletedTask;
   }
   
-  private async Task ExecuteInternal()
-  {
-    if (IsBusy || !CanExecute) return;
-    
-    try
-    {
-      IsBusy = true;
-      await Execute();
-    }
-    catch (Exception e)
-    {
-      await HandleException(e);
-    }
-    finally
-    {
-      IsBusy = false;
-    }
-  }
-
   void ICommand.Execute(object? parameter)
   {
-    _ = ExecuteInternal();
+    _ = Execute();
   }
 
   bool ICommand.CanExecute(object? parameter)
@@ -99,7 +99,24 @@ public abstract class CommandBase<T> : BindableBaseSimple, ICommand, IAsyncComma
     }
   }
   
-  public abstract Task Execute(T parameter);
+  public async Task Execute(T parameter)
+  {
+    if (IsBusy || !CanExecute(parameter)) return;
+    
+    try
+    {
+      IsBusy = true;
+      await ExecuteInternal(parameter);
+    }
+    catch (Exception e)
+    {
+      await HandleException(parameter, e);
+    }
+    finally
+    {
+      IsBusy = false;
+    }
+  }
   
   public virtual bool CanExecute(T parameter)
   {
@@ -115,29 +132,12 @@ public abstract class CommandBase<T> : BindableBaseSimple, ICommand, IAsyncComma
   {
     return Task.CompletedTask;
   }
-   
-  private async Task ExecuteInternal(T parameter)
-  {
-    if (IsBusy || !CanExecute(parameter)) return;
-    
-    try
-    {
-      IsBusy = true;
-      await Execute(parameter);
-    }
-    catch (Exception e)
-    {
-      await HandleException(parameter, e);
-    }
-    finally
-    {
-      IsBusy = false;
-    }
-  }
-
+  
+  protected abstract Task ExecuteInternal(T parameter);
+  
   void ICommand.Execute(object? parameter)
   {
-    _ = ExecuteInternal(parameter is T t ? t : default!);
+    _ = Execute(parameter is T t ? t : default!);
   }
 
   bool ICommand.CanExecute(object? parameter)

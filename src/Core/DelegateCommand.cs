@@ -17,7 +17,7 @@ public class DelegateCommand : CommandBase
   {
   }
   
-  public override async Task Execute()
+  protected override async Task ExecuteInternal()
   {
     await execute();
   }
@@ -56,7 +56,7 @@ public class DelegateCommand<T> : CommandBase<T>
   {
   }
   
-  public override async Task Execute(T parameter)
+  protected override async Task ExecuteInternal(T parameter)
   {
     await execute(parameter);
   }
