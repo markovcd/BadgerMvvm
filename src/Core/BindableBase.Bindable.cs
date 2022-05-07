@@ -68,11 +68,6 @@ public abstract partial class BindableBase<TViewModel>
       return new DisposableAction(Unsubscribe);
     }
 
-    public IDisposable AddValidationRule(Func<IBindable<T>, ValidationResult> rule)
-    {
-      return AddValidationRule(new DelegateValidationRule(rule));
-    }
-
     public IDisposable AddValidationRule(IValidationRule<T> rule)
     {
       validationRules.Add(rule);
@@ -224,21 +219,6 @@ public abstract partial class BindableBase<TViewModel>
       public void Dispose()
       {
         action();
-      }
-    }
-
-    private sealed class DelegateValidationRule : IValidationRule<T>
-    {
-      private readonly Func<IBindable<T>, ValidationResult> func;
-
-      public DelegateValidationRule(Func<IBindable<T>, ValidationResult> func)
-      {
-        this.func = func;
-      }
-      
-      public ValidationResult Validate(IBindable<T> property)
-      {
-        return func(property);
       }
     }
   }

@@ -23,7 +23,5 @@ public interface IBindable<T> : IBindable, IEquatable<T>, IEquatable<IBindable<T
   
   IDisposable ListenForErrors(Action<IBindable<T>> callback);
 
-  IDisposable AddValidationRule(Func<IBindable<T>, ValidationResult> rule);
-  
   IDisposable AddValidationRule(IValidationRule<T> rule);
 }
