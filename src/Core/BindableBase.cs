@@ -103,7 +103,7 @@ public abstract partial class BindableBase<TViewModel> : BindableBaseSimple, INo
   {
     var bindableType = typeof(BindableBase<>.Bindable<>).MakeGenericType(typeof(TViewModel), propertyType);
     var constructor = bindableType.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Single();
-    var onPropertyChanged = RaisePropertyChanged;
+    Action<string?> onPropertyChanged = RaisePropertyChanged;
     var onErrorsChanged = OnErrorsChanged;
     
     return (IBindable)constructor.Invoke(

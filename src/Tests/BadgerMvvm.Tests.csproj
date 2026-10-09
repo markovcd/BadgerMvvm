@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\core\BadgerMvvm.Core.csproj" />
+    <ProjectReference Include="..\Core\BadgerMvvm.Core.csproj" />
   </ItemGroup>
 
 </Project>
